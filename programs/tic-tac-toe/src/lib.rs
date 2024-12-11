@@ -4,15 +4,25 @@ use num_traits::FromPrimitive;
 
 declare_id!("AkBh5XtEmD5nQaZkTtNoPc1xhC6miVZHE4jK4in2WSbs");
 
-// #[program]
-// pub mod tic_tac_toe {
-//     use super::*;
+#[program]
+pub mod tic_tac_toe {
+    use super::*;
 
-//     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-//         msg!("Greetings from: {:?}", ctx.program_id);
-//         Ok(())
-//     }
-// }
+    pub fn setup_game(ctx: Context<SetupGame>, player2: Pubkey) -> Result<()> {
+        let game = &mut ctx.accounts.game;
+        game.start([ctx.accounts.player1.key(), player2])?;
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct SetupGame<'info> {
+    #[account(init, payer = player1, space = 8 + Game::MAXIMUM_SIZE)]
+    pub game: Account<'info, Game>,
+    #[account(mut)]
+    pub player1: Signer<'info>,
+    pub system_program: Program<'info, System>
+}
 
 #[account]
 pub struct Game {
