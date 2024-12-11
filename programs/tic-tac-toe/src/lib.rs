@@ -136,9 +136,6 @@ impl Game {
                 }
             }
         }
-
         self.state = GameState::Tie;
     }
-
-
 }
